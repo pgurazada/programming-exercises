@@ -1,4 +1,6 @@
-using Random
+using Random: seed!
+
+seed!(20130810)
 
 # algorithm 1
 # The time complexity of this algorithm is O(n3)
@@ -64,12 +66,28 @@ function sub_array_sum_algo3(v::Vector)
 end
 
 
-function test_time_complexity(vf::Vector{Function},
-                              n = [10^2, 10^3, 10^4, 10^5, 10^6, 10^7])
+function test_time_complexity(algos_vec::Vector{Function},
+                              n = [10^2, 10^3, 10^4])
+
+    algo_times = Dict()
+
+    for algo in algos_vec
+        algo_times[string(algo)] = []
+    end
 
     for n_i in n
+        v = rand(n_i)
+        for algo in algos_vec
+            println("Testing algorithm ", string(algo), " for $(n_i)")
+            t = @elapsed algo(v)
+            push!(algo_times[string(algo)], t)
+        end
+    end
 
+    return algo_times
 
-    
+end
 
-
+test_time_complexity([sub_array_sum_algo1, 
+                      sub_array_sum_algo2, 
+                      sub_array_sum_algo3])
